@@ -39,20 +39,19 @@ public class MinecraftClientMixin implements RemoteConfigProvider {
     }
 
     @Override
-    public void initConfig(PacketByteBuf buf) {
+    public void initMany(PacketByteBuf buf) {
         int count = buf.readVarInt();
 
         for (int i = 0; i < count; i++) {
-            ConfigKey<?> key = keyIds.get(buf.readIdentifier());
-            Config config = key.create();
-            config.initFromPacket(buf);
-            configs.put(key, config);
+            initConfig(buf);
         }
     }
 
     @Override
-    public void updateConfig(PacketByteBuf buf) {
+    public void initConfig(PacketByteBuf buf) {
         ConfigKey<?> key = keyIds.get(buf.readIdentifier());
-        configs.get(key).initFromPacket(buf);
+        Config config = key.create();
+        config.initFromPacket(buf);
+        configs.put(key, config);
     }
 }

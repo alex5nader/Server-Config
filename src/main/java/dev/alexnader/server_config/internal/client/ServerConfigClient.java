@@ -9,11 +9,11 @@ public class ServerConfigClient implements ClientModInitializer {
     public void onInitializeClient() {
         ClientPlayNetworking.registerGlobalReceiver(
             ServerConfig.MANY_PACKET,
-            (client, handler, buf, responseSender) -> ((RemoteConfigProvider) client).initConfig(buf)
+            (client, handler, buf, responseSender) -> ((RemoteConfigProvider) client).initMany(buf)
         );
         ClientPlayNetworking.registerGlobalReceiver(
             ServerConfig.SINGLE_PACKET,
-            (client, handler, buf, responseSender) -> ((RemoteConfigProvider) client).updateConfig(buf)
+            (client, handler, buf, responseSender) -> ((RemoteConfigProvider) client).initConfig(buf)
         );
     }
 }
