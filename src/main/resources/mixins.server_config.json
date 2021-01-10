@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "dev.alexnader.server_config.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "server.MinecraftServerMixin",
+    "server.ServerWorldMixin"
+  ],
+  "client": [
+    "client.ClientWorldMixin",
+    "client.MinecraftClientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

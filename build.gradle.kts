@@ -9,8 +9,6 @@ import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
 
 plugins {
-    `kotlin-dsl`
-
     java
     `java-library`
     id("fabric-loom").version(Fabric.Loom.version)
@@ -20,9 +18,9 @@ plugins {
     id("com.modrinth.minotaur").version("1.1.0")
 }
 
-base.archivesBaseName = FabricTemplate.name
-group = FabricTemplate.group
-version = FabricTemplate.version
+base.archivesBaseName = ServerConfig.name
+group = ServerConfig.group
+version = ServerConfig.version
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -67,30 +65,30 @@ dependencies {
 
 object Meta {
     val changelogLink =
-        "See https://github.com/alex5nader/${FabricTemplate.name}/milestones for a list of changelogs."
+        "See https://github.com/alex5nader/${ServerConfig.name}/milestones for a list of changelogs."
 
     val minecraftVersions = listOf(
         "1.16.4"
     )
 
-    val modVersionName = "Version ${FabricTemplate.version}"
+    val modVersionName = "Version ${ServerConfig.version}"
 }
 
 tasks.getByName<ProcessResources>("processResources") {
-    inputs.properties("version" to FabricTemplate.version)
+    inputs.properties("version" to ServerConfig.version)
     filesMatching("fabric.mod.json") {
         expand(
-            "modId" to FabricTemplate.modId,
-            "modVersion" to FabricTemplate.version,
-            "modName" to FabricTemplate.name,
-            "modPrettyName" to FabricTemplate.prettyName,
+            "modId" to ServerConfig.modId,
+            "modVersion" to ServerConfig.version,
+            "modName" to ServerConfig.name,
+            "modPrettyName" to ServerConfig.prettyName,
 
             "fapiVersion" to Fabric.api.version,
             "mcVersions" to Meta.minecraftVersions.joinToString("\",\"")
         )
     }
-    filesMatching("mixins.${FabricTemplate.modId}.json") {
-        expand("modId" to FabricTemplate.modId)
+    filesMatching("mixins.${ServerConfig.modId}.json") {
+        expand("modId" to ServerConfig.modId)
     }
 }
 
@@ -98,7 +96,7 @@ val remapJar = tasks.getByName<RemapJarTask>("remapJar")
 
 publishing {
     publications.create<MavenPublication>("maven") {
-        artifactId = FabricTemplate.version
+        artifactId = ServerConfig.version
 
         artifact(remapJar) {
             classifier = null
@@ -114,11 +112,11 @@ val apiKeys by lazy {
 val publishModrinth = tasks.create<TaskModrinthUpload>("publishModrinth") {
     val modrinthApiKey: String by apiKeys
     token = modrinthApiKey
-    projectId = FabricTemplate.modrinthId
+    projectId = ServerConfig.modrinthId
 
     changelog = Meta.changelogLink
 
-    versionNumber = FabricTemplate.version
+    versionNumber = ServerConfig.version
     versionName = Meta.modVersionName
     releaseType = "release"
 
@@ -133,7 +131,7 @@ curseforge {
     apiKey = curseforgeApiKey
 
     project(closureOf<CurseProject> {
-        id = FabricTemplate.curseforgeId
+        id = ServerConfig.curseforgeId
 
         mainArtifact(remapJar)
 

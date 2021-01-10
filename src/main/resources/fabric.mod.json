@@ -21,16 +21,17 @@
   "license": "LGPL-3.0-or-later",
 
   "entrypoints": {
-    "main": [
-      "dev.alexnader.fabric_template.common.FabricTemplate"
-    ],
     "client": [
-      "dev.alexnader.fabric_template.client.FabricTemplateClient"
+      "dev.alexnader.server_config.internal.client.ServerConfigClient"
     ]
   },
   "mixins": [
     "mixins.${modId}.json"
   ],
+
+  "custom": {
+    "modmenu:api": true
+  },
 
   "depends": {
     "fabricloader": "*",
