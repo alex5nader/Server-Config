@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
- import net.fabricmc.loom.task.RemapJarTask
+import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     java
@@ -88,7 +88,7 @@ val remapJar = tasks.getByName<RemapJarTask>("remapJar")
 
 publishing {
     repositories {
-        maven(url = "maven.pkg.github.com/alex5nader/${ServerConfig.name}") {
+        maven(url = "https://maven.pkg.github.com/alex5nader/${ServerConfig.name}") {
             name = "GitHub_Packages"
             credentials {
                 username = "alex5nader"
