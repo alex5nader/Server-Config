@@ -98,7 +98,7 @@ publishing {
     }
 
     publications.create<MavenPublication>("maven") {
-        artifactId = ServerConfig.version
+        artifactId = ServerConfig.name
 
         artifact(remapJar) {
             classifier = null
