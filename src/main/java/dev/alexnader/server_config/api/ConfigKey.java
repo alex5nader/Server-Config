@@ -1,7 +1,9 @@
 package dev.alexnader.server_config.api;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
 public final class ConfigKey<C extends Config> {
@@ -19,5 +21,12 @@ public final class ConfigKey<C extends Config> {
 
     public C create() {
         return defaultFactory.get();
+    }
+
+    public Path path() {
+        return FabricLoader.getInstance()
+            .getConfigDir()
+            .resolve(id.getNamespace())
+            .resolve(id.getPath());
     }
 }

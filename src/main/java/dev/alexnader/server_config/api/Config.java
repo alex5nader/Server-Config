@@ -9,4 +9,5 @@ public interface Config {
     void initFromPath(Path path);
 
     void writeToPacket(PacketByteBuf buf);
+    void saveToPath(Path path);
 }

@@ -31,7 +31,7 @@ public class MinecraftServerMixin implements ServerConfigProvider {
         for (ServerConfigEntrypoint entrypoint : FabricLoader.getInstance().getEntrypoints("server_config", ServerConfigEntrypoint.class)) {
             entrypoint.registerConfigs(key -> {
                 Config config = key.create();
-                config.initFromPath(FabricLoader.getInstance().getConfigDir().resolve(key.id().getNamespace()).resolve(key.id().getPath()));
+                config.initFromPath(key.path());
                 configs.put(key, config);
             });
         }
@@ -41,6 +41,16 @@ public class MinecraftServerMixin implements ServerConfigProvider {
     public <C extends Config> C config(ConfigKey<C> key) {
         //noinspection unchecked // ConfigKey<T> always maps to T
         return (C) configs.get(key);
+    }
+
+    @Override
+    public <C extends Config> void save(ConfigKey<C> key) {
+        configs.get(key).saveToPath(key.path());
+    }
+
+    @Override
+    public void saveAll() {
+        configs.keySet().forEach(this::save);
     }
 
     @Override
