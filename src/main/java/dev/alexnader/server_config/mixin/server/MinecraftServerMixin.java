@@ -19,6 +19,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 @Mixin(MinecraftServer.class)
@@ -31,8 +34,15 @@ public class MinecraftServerMixin implements ServerConfigProvider {
         for (ServerConfigEntrypoint entrypoint : FabricLoader.getInstance().getEntrypoints("server_config", ServerConfigEntrypoint.class)) {
             entrypoint.registerConfigs(key -> {
                 Config config = key.create();
-                config.initFromPath(key.path());
-                configs.put(key, config);
+                Path path = key.path();
+
+                try {
+                    Files.createDirectories(path.normalize().getParent());
+                    config.initFromPath(key.path());
+                    configs.put(key, config);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }
     }
@@ -45,7 +55,13 @@ public class MinecraftServerMixin implements ServerConfigProvider {
 
     @Override
     public <C extends Config> void save(ConfigKey<C> key) {
-        configs.get(key).saveToPath(key.path());
+        Path path = key.path();
+        try {
+            Files.createDirectories(path.normalize().getParent());
+            configs.get(key).saveToPath(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
