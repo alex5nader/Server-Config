@@ -1,12 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-import java.util.Properties
-import net.fabricmc.loom.task.RemapJarTask
-import com.modrinth.minotaur.TaskModrinthUpload
-import com.matthewprenger.cursegradle.CurseArtifact
-import com.matthewprenger.cursegradle.CurseProject
-import com.matthewprenger.cursegradle.CurseRelation
-import com.matthewprenger.cursegradle.Options
+ import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     java
@@ -14,8 +8,6 @@ plugins {
     id("fabric-loom").version(Fabric.Loom.version)
 
     `maven-publish`
-    id("com.matthewprenger.cursegradle").version("1.4.0")
-    id("com.modrinth.minotaur").version("1.1.0")
 }
 
 base.archivesBaseName = ServerConfig.name
@@ -113,79 +105,4 @@ publishing {
             builtBy(remapJar)
         }
     }
-}
-
-val apiKeys by lazy {
-    Properties().apply { load(file("apiKeys.properties").inputStream()) }
-}
-
-val publishModrinth = tasks.create<TaskModrinthUpload>("publishModrinth") {
-    val modrinthApiKey: String by apiKeys
-    token = modrinthApiKey
-    projectId = ServerConfig.modrinthId
-
-    changelog = Meta.changelogLink
-
-    versionNumber = ServerConfig.version
-    versionName = Meta.modVersionName
-    releaseType = "release"
-
-    uploadFile = remapJar
-
-    Meta.minecraftVersions.forEach(this::addGameVersion)
-    addLoader("fabric")
-}
-
-curseforge {
-    val curseforgeApiKey: String by apiKeys
-    apiKey = curseforgeApiKey
-
-    project(closureOf<CurseProject> {
-        id = ServerConfig.curseforgeId
-
-        mainArtifact(remapJar)
-
-        releaseType = "release"
-
-        Meta.minecraftVersions.forEach(this::addGameVersion)
-        addGameVersion("Fabric")
-
-        relations(closureOf<CurseRelation> {
-            jijDeps.forEach { dep ->
-                dep.curseforgeSlug
-                    .takeIf { dep.referenceOnCurseforge }
-                    ?.let {
-                        embeddedLibrary(it)
-                    }
-            }
-            deps.forEach { dep ->
-                dep.curseforgeSlug
-                    .takeIf { dep.referenceOnCurseforge }
-                    ?.takeIf { dep !in jijDeps }
-                    ?.let {
-                        requiredDependency(it)
-                    }
-            }
-            runtimeDeps.forEach { dep ->
-                dep.curseforgeSlug
-                    .takeIf { dep.referenceOnCurseforge }
-                    ?.let {
-                        optionalDependency(it)
-                    }
-            }
-        })
-
-        changelog = Meta.changelogLink
-
-        mainArtifact(
-            file("${project.buildDir}/libs/${base.archivesBaseName}-$version.jar"),
-            closureOf<CurseArtifact> {
-                displayName = Meta.modVersionName
-            }
-        )
-    })
-
-    options(closureOf<Options> {
-        forgeGradleIntegration = false
-    })
 }
