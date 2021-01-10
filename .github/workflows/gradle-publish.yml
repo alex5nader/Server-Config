@@ -26,3 +26,5 @@ jobs:
 
     - name: Publish to GitHub Packages
       run: gradle publish
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
