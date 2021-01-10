@@ -36,7 +36,7 @@ object Fabric {
     val api = Dependency("net.fabricmc.fabric-api", "fabric-api", "0.29.3+1.16")
 }
 
-object ServerConfig : Dependency("dev.alexnader", "Server-Config", "0") {
+object ServerConfig : Dependency("dev.alexnader", "Server-Config", "0.1") {
     const val modId = "server_config"
     const val prettyName = "Server Config"
 
